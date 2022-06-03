@@ -3,8 +3,10 @@ from flask import Flask, request, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import random
+import json
 
 from models import setup_db, Question, Category
+from helpers import get_paginated_data
 
 QUESTIONS_PER_PAGE = 10
 
@@ -12,13 +14,24 @@ def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__)
     setup_db(app)
+    CORS(app)
+
+    @app.after_request
+    def after_request(response):
+        response.headers.add(
+            "Access-Control-Allow-Headers", "Content-Type,Authorization,true"
+        )
+        response.headers.add(
+            "Access-Control-Allow-Methods", "GET,PUT,PATCH,POST,DELETE,OPTIONS"
+        )
+        return response
 
     """
-    @TODO: Set up CORS. Allow '*' for origins. Delete the sample route after completing the TODOs
+    @TODO: Set up CORS. Allow '*' for origins. Delete the sample route after completing the TODOs [PROBABLY DONE]
     """
 
     """
-    @TODO: Use the after_request decorator to set Access-Control-Allow
+    @TODO: Use the after_request decorator to set Access-Control-Allow  [DONE]
     """
 
     """
@@ -27,6 +40,27 @@ def create_app(test_config=None):
     for all available categories.
     """
 
+    # move into an helpers.py file
+    def get_paginated_questions(request, selection):
+        page = request.args.get('page', 1, type=int)
+        start = (page - 1) * QUESTIONS_PER_PAGE
+        end = start + QUESTIONS_PER_PAGE
+        result = [Question.format(question) for question in selection]
+        return result[start:end]
+
+    @app.route("/categories")
+    def list_categories():
+        categories = Category.query.all()
+        formatted_categories = {}
+
+        for category in categories:
+            formatted_categories[category.id] = category.type
+
+        return jsonify({
+            'success': True,
+            'categories': formatted_categories,
+            'total_categories': len(categories)
+        })
 
     """
     @TODO:
@@ -40,6 +74,34 @@ def create_app(test_config=None):
     ten questions per page and pagination at the bottom of the screen for three pages.
     Clicking on the page numbers should update the questions.
     """
+
+    @app.route("/questions")
+    def list_questions():
+        page = request.args.get("page", 1, type=int)
+        start = (page - 1) * QUESTIONS_PER_PAGE
+        end = start + QUESTIONS_PER_PAGE
+        current_category = request.args.get("category")
+
+        print('current_category', current_category)
+        print(type(current_category))
+
+        questions = []
+        if current_category:
+            print("sly me")
+            questions = Question.query.filter_by(category=current_category)
+        else:
+            questions = Question.query.all()
+
+        # paginated_questions = get_paginated_questions(request, questions)
+        questions = [Question.format(question) for question in questions]
+
+        return jsonify({
+            'success': True,
+            'total_questions': len(questions),
+            'questions': questions[start:end],
+            'categories': list_categories().get_json()['categories'],
+            'current_category': current_category
+        })
 
     """
     @TODO:
@@ -70,6 +132,35 @@ def create_app(test_config=None):
     only question that include that string within their question.
     Try using the word "title" to start.
     """
+
+    @app.route("/questions/search", methods=['POST'])
+    def search_questions():
+        body = request.get_json()
+        search_term = body.get('searchTerm', "")
+        current_category = body.get('category', "")
+
+        page = request.args.get("page", 1, type=int)
+        start = (page - 1) * QUESTIONS_PER_PAGE
+        end = start + QUESTIONS_PER_PAGE
+
+        print("kumi", current_category)
+        print(type(current_category))
+        questions = []
+        if current_category:
+            print("spinazola")
+            questions = Question.query.filter(Question.question.ilike('%' + search_term + '%'), Question.category == current_category).all()
+            
+        else:
+            questions = Question.query.filter(Question.question.ilike('%' + search_term + '%')).all()
+
+        questions = [Question.format(question) for question in questions]
+
+        return jsonify({
+            'success': True,
+            'total_questions': len(questions),
+            'questions': questions[start:end],
+            'current_category': current_category
+        })
 
     """
     @TODO:
