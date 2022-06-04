@@ -65,7 +65,8 @@ class QuestionView extends Component {
 
   getByCategory = (id) => {
     $.ajax({
-      url: `/categories/${id}/questions`, //TODO: update request URL
+      // url: `/categories/${id}/questions`, //TODO: update request URL
+      url: `/questions?category=${id}`,
       type: 'GET',
       success: (result) => {
         this.setState({
@@ -84,11 +85,11 @@ class QuestionView extends Component {
 
   submitSearch = (searchTerm) => {
     $.ajax({
-      url: `/questions`, //TODO: update request URL
+      url: `/questions/search?`, //TODO: update request URL
       type: 'POST',
       dataType: 'json',
       contentType: 'application/json',
-      data: JSON.stringify({ searchTerm: searchTerm }),
+      data: JSON.stringify({ searchTerm: searchTerm, category: this.state.currentCategory }),
       xhrFields: {
         withCredentials: true,
       },
@@ -144,8 +145,9 @@ class QuestionView extends Component {
                 onClick={() => {
                   this.getByCategory(id);
                 }}
+                className={this.state.currentCategory === id ? ' active-category' : ''}
               >
-                {this.state.categories[id]}
+                <span style={{marginRight: "10px"}}> {this.state.categories[id]}</span>
                 <img
                   className='category'
                   alt={`${this.state.categories[id].toLowerCase()}`}

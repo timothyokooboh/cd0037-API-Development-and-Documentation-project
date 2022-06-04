@@ -23,7 +23,21 @@ h2 {
 
 li {
   text-align: center;
-  margin: 5px 0px;
+  margin: 15px 0px 15px 10px;
+  display: flex;
+  justify-content: center;
+  cursor: pointer;
+}
+
+li > img {
+  width: 20px;
+  height: 20px;
+}
+
+.active-category {
+  background-color: dodgerblue;
+  color: white;
+  padding: 5px;
 }
 
 ul {

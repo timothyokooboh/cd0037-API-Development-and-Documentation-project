@@ -26,6 +26,13 @@
     color: white;
     padding: 3px 5px;
     align-self: center;
+    cursor: pointer;
+}
+
+.button:disabled {
+    cursor: no-drop;
+    background-color: lightgrey;
+    color: black;
 }
 
 div.button {

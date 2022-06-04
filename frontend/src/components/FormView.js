@@ -11,6 +11,7 @@ class FormView extends Component {
       difficulty: 1,
       category: 1,
       categories: {},
+      showSuccess: false,
     };
   }
 
@@ -27,6 +28,10 @@ class FormView extends Component {
         return;
       },
     });
+  }
+
+  disableButton = () => {
+    return !this.state.question || !this.state.answer;
   }
 
   submitQuestion = (event) => {
@@ -47,6 +52,12 @@ class FormView extends Component {
       },
       crossDomain: true,
       success: (result) => {
+        this.setState({showSuccess: true, question: '', answer: '', difficulty: 1, category: 1});
+
+        setTimeout(() => {
+          this.setState({showSuccess: false});
+        }, 4000)
+
         document.getElementById('add-question-form').reset();
         return;
       },
@@ -100,8 +111,12 @@ class FormView extends Component {
               })}
             </select>
           </label>
-          <input type='submit' className='button' value='Submit' />
+          <input type='submit' className='button' value='Submit' disabled={this.disableButton()} />
         </form>
+
+        { this.state.showSuccess && <div className="notification">
+          Question added successfully
+        </div> }
       </div>
     );
   }

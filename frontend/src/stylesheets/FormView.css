@@ -5,3 +5,22 @@
 #add-form {
   text-align: center;
 }
+
+.notification {
+  animation: fadeIn .5s ease-in;
+  position: fixed;
+  top: 10px;
+  left: 50%;
+  padding: 10px 15px;
+  border-radius: 5px;
+  background-color: white;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
