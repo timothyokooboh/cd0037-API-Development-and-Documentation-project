@@ -53,6 +53,42 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(data['questions'])
         self.assertTrue(data['categories'])
 
+    def test_question_search_found(self):
+        res = self.client().post("/questions/search", json={'searchTerm': 'did', 'category': None })
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['questions'])
+        self.assertTrue(data['total_questions'])
+
+    def test_delete_question(self):
+        question = Question(question='what is the largest organ in the body', answer='liver', category=1, difficulty=1)
+        question.insert()
+
+        res = self.client().delete("/questions/{}".format(question.id))
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertEqual(data['deleted'], question.id)
+    
+    def test_delete_question_fail(self):
+        res = self.client().delete("/questions/{}".format(50000000000))
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'resource not found')
+
+    def test_create_question(self):
+        res = self.client().post("/questions", json={'question': 'Nigeria is in which continent', 'answer': 'africa', 'category': 3, 'difficulty': 1})
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['question'])
+        self.assertTrue(data['category'])
+        self.assertTrue(data['difficulty'])
+
+
 
 # Make the tests conveniently executable
 if __name__ == "__main__":

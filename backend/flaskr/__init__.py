@@ -40,14 +40,6 @@ def create_app(test_config=None):
     for all available categories.
     """
 
-    # move into an helpers.py file
-    def get_paginated_questions(request, selection):
-        page = request.args.get('page', 1, type=int)
-        start = (page - 1) * QUESTIONS_PER_PAGE
-        end = start + QUESTIONS_PER_PAGE
-        result = [Question.format(question) for question in selection]
-        return result[start:end]
-
     @app.route("/categories")
     def list_categories():
         categories = Category.query.all()
@@ -77,9 +69,6 @@ def create_app(test_config=None):
 
     @app.route("/questions")
     def list_questions():
-        page = request.args.get("page", 1, type=int)
-        start = (page - 1) * QUESTIONS_PER_PAGE
-        end = start + QUESTIONS_PER_PAGE
         current_category = request.args.get("category")
 
         print('current_category', current_category)
@@ -92,24 +81,37 @@ def create_app(test_config=None):
         else:
             questions = Question.query.all()
 
-        # paginated_questions = get_paginated_questions(request, questions)
-        questions = [Question.format(question) for question in questions]
+        paginated_questions, total_questions = get_paginated_data(request, questions, Question)
 
         return jsonify({
             'success': True,
-            'total_questions': len(questions),
-            'questions': questions[start:end],
+            'total_questions': total_questions,
+            'questions': paginated_questions,
             'categories': list_categories().get_json()['categories'],
             'current_category': current_category
         })
 
     """
     @TODO:
-    Create an endpoint to DELETE question using a question ID.
+    Create an endpoint to DELETE question using a question ID. [DONE]
 
     TEST: When you click the trash icon next to a question, the question will be removed.
     This removal will persist in the database and when you refresh the page.
     """
+
+    @app.route("/questions/<int:question_id>", methods=['DELETE'])
+    def delete_question(question_id):
+        question = Question.query.get(question_id)
+
+        if not question:
+            abort(404)
+
+        question.delete()
+
+        return jsonify({
+            'success': True,
+            'deleted': question_id
+        })
 
     """
     @TODO:
@@ -122,11 +124,33 @@ def create_app(test_config=None):
     of the questions list in the "List" tab.
     """
 
+    @app.route("/questions", methods=['POST'])
+    def create_question():
+        try:
+            body = request.get_json()
+            question = body.get('question')
+            answer = body.get('answer')
+            category = body.get('category')
+            difficulty = body.get('difficulty')
+            question = Question(question=question, answer=answer, category=category, difficulty=difficulty)
+            question.insert()
+
+            return jsonify({
+                'success': True,
+                'created': question.id,
+                'question': question.question,
+                'answer': question.answer,
+                'category': question.category,
+                'difficulty': question.difficulty
+            })
+        except:
+            abort(422)
+
     """
     @TODO:
     Create a POST endpoint to get questions based on a search term.
     It should return any questions for whom the search term
-    is a substring of the question.
+    is a substring of the question. [DONE]
 
     TEST: Search by any phrase. The questions list will update to include
     only question that include that string within their question.
@@ -139,26 +163,19 @@ def create_app(test_config=None):
         search_term = body.get('searchTerm', "")
         current_category = body.get('category', "")
 
-        page = request.args.get("page", 1, type=int)
-        start = (page - 1) * QUESTIONS_PER_PAGE
-        end = start + QUESTIONS_PER_PAGE
-
-        print("kumi", current_category)
-        print(type(current_category))
         questions = []
         if current_category:
-            print("spinazola")
             questions = Question.query.filter(Question.question.ilike('%' + search_term + '%'), Question.category == current_category).all()
             
         else:
             questions = Question.query.filter(Question.question.ilike('%' + search_term + '%')).all()
 
-        questions = [Question.format(question) for question in questions]
+        paginated_questions, total_questions = get_paginated_data(request, questions, Question)
 
         return jsonify({
             'success': True,
-            'total_questions': len(questions),
-            'questions': questions[start:end],
+            'total_questions': total_questions,
+            'questions': paginated_questions,
             'current_category': current_category
         })
 
@@ -188,6 +205,22 @@ def create_app(test_config=None):
     Create error handlers for all expected errors
     including 404 and 422.
     """
+
+    @app.errorhandler(404)
+    def not_found(error):
+        return jsonify({
+            "success": False,
+            "error": 404,
+            "message": "resource not found"
+        }), 404
+
+    @app.errorhandler(422)
+    def unprocessable(error):
+        return jsonify({
+            "success": False,
+            "error": 422,
+            "message": "unprocessable"
+        }), 422
 
     return app
 
