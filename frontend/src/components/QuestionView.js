@@ -65,8 +65,7 @@ class QuestionView extends Component {
 
   getByCategory = (id) => {
     $.ajax({
-      // url: `/categories/${id}/questions`, //TODO: update request URL
-      url: `/questions?category=${id}`,
+      url: `/categories/${id}/questions`, //TODO: update request URL
       type: 'GET',
       success: (result) => {
         this.setState({
@@ -138,6 +137,7 @@ class QuestionView extends Component {
           >
             Categories
           </h2>
+          
           <ul>
             {Object.keys(this.state.categories).map((id) => (
               <li
@@ -145,7 +145,7 @@ class QuestionView extends Component {
                 onClick={() => {
                   this.getByCategory(id);
                 }}
-                className={this.state.currentCategory === id ? ' active-category' : ''}
+                className={Number(id) === Number(this.state.currentCategory) ? 'active-category' : ''}
               >
                 <span style={{marginRight: "10px"}}> {this.state.categories[id]}</span>
                 <img
@@ -160,7 +160,7 @@ class QuestionView extends Component {
         </div>
         <div className='questions-list'>
           <h2>Questions</h2>
-          {this.state.questions.map((q, ind) => (
+          { this.state.questions.length ? this.state.questions.map((q, ind) => (
             <Question
               key={q.id}
               question={q.question}
@@ -169,7 +169,7 @@ class QuestionView extends Component {
               difficulty={q.difficulty}
               questionAction={this.questionAction(q.id)}
             />
-          ))}
+          )) : "No questions found" }
           <div className='pagination-menu'>{this.createPagination()}</div>
         </div>
       </div>
