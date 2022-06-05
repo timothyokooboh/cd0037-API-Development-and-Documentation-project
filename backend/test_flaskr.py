@@ -48,15 +48,14 @@ class TriviaTestCase(unittest.TestCase):
     def test_list_questions(self):
         res = self.client().get("/questions")
         data = json.loads(res.data)
-
         self.assertEqual(res.status_code, 200)
         self.assertTrue(data['questions'])
         self.assertTrue(data['categories'])
 
     def test_question_search_found(self):
         res = self.client().post("/questions/search", json={'searchTerm': 'did', 'category': None })
-        data = json.loads(res.data)
 
+        data = json.loads(res.data)
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
         self.assertTrue(data['questions'])
@@ -81,12 +80,38 @@ class TriviaTestCase(unittest.TestCase):
 
     def test_create_question(self):
         res = self.client().post("/questions", json={'question': 'Nigeria is in which continent', 'answer': 'africa', 'category': 3, 'difficulty': 1})
+
         data = json.loads(res.data)
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
         self.assertTrue(data['question'])
         self.assertTrue(data['category'])
         self.assertTrue(data['difficulty'])
+
+    def test_get_question_for_quiz(self):
+        res = self.client().post("/quizzes", json={'quiz_category': {'type': 'science', 'id': 1}, 'previous_questions': []})
+
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['question'])
+    
+    def test_get_question_based_on_category(self):
+        res = self.client().get("/categories/1/questions")
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['questions'])
+        self.assertTrue(data['total_questions'])
+        self.assertEqual(data['current_category'], 1)
+    
+    def test_get_question_based_on_category_fail(self):
+        res = self.client().get("/categories/500000000/questions")
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'resource not found')
+
 
 
 

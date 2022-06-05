@@ -5,6 +5,8 @@ from flask_cors import CORS
 import random
 import json
 
+from sqlalchemy import false
+
 from models import setup_db, Question, Category
 from helpers import get_paginated_data
 
@@ -37,7 +39,7 @@ def create_app(test_config=None):
     """
     @TODO:
     Create an endpoint to handle GET requests
-    for all available categories.
+    for all available categories. [DONE]
     """
 
     @app.route("/categories")
@@ -59,7 +61,7 @@ def create_app(test_config=None):
     Create an endpoint to handle GET requests for questions,
     including pagination (every 10 questions).
     This endpoint should return a list of questions,
-    number of total questions, current category, categories.
+    number of total questions, current category, categories. [DONE]
 
     TEST: At this point, when you start the application
     you should see questions and categories generated,
@@ -69,18 +71,7 @@ def create_app(test_config=None):
 
     @app.route("/questions")
     def list_questions():
-        current_category = request.args.get("category")
-
-        print('current_category', current_category)
-        print(type(current_category))
-
-        questions = []
-        if current_category:
-            print("sly me")
-            questions = Question.query.filter_by(category=current_category)
-        else:
-            questions = Question.query.all()
-
+        questions = Question.query.all()
         paginated_questions, total_questions = get_paginated_data(request, questions, Question)
 
         return jsonify({
@@ -88,7 +79,7 @@ def create_app(test_config=None):
             'total_questions': total_questions,
             'questions': paginated_questions,
             'categories': list_categories().get_json()['categories'],
-            'current_category': current_category
+            'current_category': None
         })
 
     """
@@ -117,7 +108,7 @@ def create_app(test_config=None):
     @TODO:
     Create an endpoint to POST a new question,
     which will require the question and answer text,
-    category, and difficulty score.
+    category, and difficulty score. [DONE]
 
     TEST: When you submit a question on the "Add" tab,
     the form will clear and the question will appear at the end of the last page
@@ -188,6 +179,24 @@ def create_app(test_config=None):
     category to be shown.
     """
 
+    @app.route("/categories/<int:category_id>/questions")
+    def get_questions_by_category(category_id):
+
+        # check if category exists
+        category = Category.query.get(category_id)
+        if not category:
+            abort(404)
+        else:
+            questions = Question.query.filter_by(category=category_id)
+            paginated_questions, total_questions = get_paginated_data(request, questions, Question)
+            
+            return jsonify({
+                'success': True,
+                'total_questions': total_questions,
+                'questions': paginated_questions,
+                'current_category': category_id
+            })
+
     """
     @TODO:
     Create a POST endpoint to get questions to play the quiz.
@@ -199,6 +208,38 @@ def create_app(test_config=None):
     one question at a time is displayed, the user is allowed to answer
     and shown whether they were correct or not.
     """
+
+    @app.route("/quizzes", methods=['POST'])
+    def play_quiz():
+        body = request.get_json()
+        print(body)
+        previous_questions = body.get('previous_questions', [])
+        quiz_category = body.get('quiz_category', {}) 
+        category_id = quiz_category.get('id')
+
+        questions = []
+        if category_id:
+            questions = Question.query.filter_by(category=category_id).all()
+        else:
+            questions = Question.query.all()
+        
+        questions = [Question.format(question) for question in questions]
+
+        def not_in_previous(question):
+            for item in previous_questions:
+                if(question['id'] == item):
+                    return False
+            return True
+
+        questions_for_quiz = list(filter(not_in_previous, questions))
+        random_question = None
+        if (len(questions_for_quiz) > 0):
+            random_question = random.choice(questions_for_quiz)
+
+        return jsonify({
+            'success': True,
+            'question': random_question
+        })
 
     """
     @TODO:
