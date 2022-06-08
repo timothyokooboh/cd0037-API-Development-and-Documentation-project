@@ -54,7 +54,7 @@ Not applicable
 ### Questions
 `GET /questions?page=3`
 * Fetches a paginated list of ten questions per page.
-* Request Arguments: page (int)
+* Request Arguments: `page (int)`
 
 ```
 {
@@ -119,8 +119,8 @@ Not applicable
 
 `POST /questions/search`
 * Returns a list of questions based on a search term
-* Request Body Parameters: searchTerm(str), category(int)
-`curl -d "searchTerm=lake&category=null" -X POST http://127.0.0.1/5000/questions/search`
+* Request Body Parameters: `searchTerm (str)`, `category (int)`
+* `curl -d "searchTerm=lake&category=null" -X POST http://127.0.0.1/5000/questions/search`
 ```
 {
     "current_category": null,
@@ -138,7 +138,21 @@ Not applicable
 }
 ```
 
+`POST /questions`
+* Adds a questionto the question library
+* Request Body Parameters: `question (str)`, `answer (str)`, `category (int)`, `difficulty (int)`
+* `curl -d "question=what is my name&answer=timothy&category=1&difficulty=3" -X POST http://127.0.0.1/5000/questions`
 
+```
+{
+    "success": true,
+    "created": 43 [id of the newly created question],
+    "question": "what is my name",
+    "answer": "timothy",
+    "category": 1,
+    "difficulty": 3
+}
+```
 
 
 

@@ -123,7 +123,9 @@ def create_app(test_config=None):
             answer = body.get('answer')
             category = body.get('category')
             difficulty = body.get('difficulty')
+
             question = Question(question=question, answer=answer, category=category, difficulty=difficulty)
+            
             question.insert()
 
             return jsonify({
