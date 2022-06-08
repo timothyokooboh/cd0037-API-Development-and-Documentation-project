@@ -19,6 +19,15 @@ The Trivia API powers the Trivia App. It contains resources and endpoints for ma
 }
 ```
 
+### 422 - Unprocessable entity
+```
+{
+    "success": False,
+    "error": 422,
+    "message": "unprocessable"
+}
+```
+
 
 
 
