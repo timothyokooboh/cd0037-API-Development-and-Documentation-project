@@ -6,6 +6,8 @@ The Trivia API powers the Trivia App. It contains resources and endpoints for ma
 ## Getting Started
 ### Base URL
 `http://127.0.0.1:5000`
+### API keys/Authentications
+Not applicable
 
 
 ## Errors
