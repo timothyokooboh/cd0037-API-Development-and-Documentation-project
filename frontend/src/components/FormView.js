@@ -12,6 +12,7 @@ class FormView extends Component {
       category: 1,
       categories: {},
       showSuccess: false,
+      newCategory: ""
     };
   }
 
@@ -117,6 +118,17 @@ class FormView extends Component {
         { this.state.showSuccess && <div className="notification">
           Question added successfully
         </div> }
+
+        <div style={{marginTop: '50px'}}>
+          <h2>Add a new category</h2>
+          <form>
+            <label>
+              Category
+              <input type="text" name="newCategory" onChange={this.handleChange} ></input>
+            </label>
+            <input type="submit" className="button" value="Submit" />
+          </form>
+        </div>
       </div>
     );
   }

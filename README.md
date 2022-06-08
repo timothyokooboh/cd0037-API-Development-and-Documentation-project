@@ -163,3 +163,22 @@ Not applicable
     'deleted': 1
 }
 ```
+
+`POST /quizzes`
+* Gets questions to play the quiz
+* Request Body Parameters: `previous_questions (list)`, `quiz_category (dict)`
+
+* `curl -d "previous_questions=[41]&quiz_category={type: Science, id: 1}" -X POST http://127.0.0.1/5000/quizzes`
+
+```
+{
+    "question": {
+        "answer": "The Liver"
+        "category: 1
+        "difficulty": 4
+        "id": 20
+        "question": "What is the heaviest organ in the human body?"
+    },
+    "success": true
+}
+
