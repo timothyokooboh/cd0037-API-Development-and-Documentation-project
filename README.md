@@ -15,7 +15,7 @@ Not applicable
 
 ```
 {
-    "success": False,
+    "success": false,
     "error": 404,
     "message": "resource not found"
 }
@@ -24,7 +24,7 @@ Not applicable
 ### 422 - Unprocessable entity
 ```
 {
-    "success": False,
+    "success": false,
     "error": 422,
     "message": "unprocessable"
 }
@@ -50,6 +50,44 @@ Not applicable
     "total_categories" 6
 }
 ```
+
+### Questions
+`GET /questions?page=3`
+* Fetches a paginated list of ten questions per page.
+* Request arguments: page (int)
+
+```
+{
+    "categories": { 
+        "1": "Science",
+        "2": "Art",
+        "3": "Geography",
+        "4": "History",
+        "5": "Entertainment",
+        "6": "Sports"
+    },
+    "current_category": null,
+    "questions": [
+        {
+            "answer": "Apollo 13",
+            "category": 5,
+            "difficulty": 4,
+            "id": 2,
+            "question": "What movie earned Tom Hanks his third straight Oscar nomination, in 1996?"
+        },
+        {
+            "answer": "Tom Cruise",
+            "category": 5,
+            "difficulty": 4,
+            "id": 4,
+            "question": "What actor did author Anne Rice first denounce, then praise in the role of her beloved Lestat?"
+        },
+    ],
+    "success": true,
+    "total_questions": 31
+}
+```
+
 
 
 
