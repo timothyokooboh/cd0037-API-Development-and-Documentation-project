@@ -154,6 +154,16 @@ Not applicable
 }
 ```
 
+`DELETE /questions/1`
+* Deletes a particular question
+* Request Argument: None
+```
+{
+    'success': true,
+    'deleted': 1
+}
+```
+
 
 
 
