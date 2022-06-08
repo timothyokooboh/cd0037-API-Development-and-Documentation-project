@@ -152,7 +152,7 @@ def create_app(test_config=None):
     def search_questions():
         body = request.get_json()
         search_term = body.get('searchTerm', "")
-        current_category = body.get('category', "")
+        current_category = body.get('category', None)
 
         questions = []
         if current_category:

@@ -116,6 +116,28 @@ Not applicable
 }
 
 
+`POST /questions/search`
+* Returns a list of questions based on a search term
+* Request Body Parameters: searchTerm(str), category(int)
+`curl -d "searchTerm=lake&category=null" -X POST http://127.0.0.1/5000/questions/search`
+```
+{
+    "current_category": null,
+    "success": true,
+    "total_questions": 1,
+    "questions": [
+        {
+            answer: "Lake Victoria"
+            category: 3
+            difficulty: 2
+            id: 13
+            question: "What is the largest lake in Africa?"
+        }
+    ]
+}
+```
+
+
 
 
 
