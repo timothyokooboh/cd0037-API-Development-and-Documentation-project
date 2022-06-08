@@ -114,6 +114,7 @@ Not applicable
         },
     ]
 }
+```
 
 
 `POST /questions/search`
