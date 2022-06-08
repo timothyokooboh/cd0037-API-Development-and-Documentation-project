@@ -1,6 +1,6 @@
 # Trivia App
 ## Introducton
-The Trivia API powers the Trivia App. It contains resources and endpoints for managing questions, categories, answers and playing the Trivia game.
+The Trivia API contains resources and endpoints for managing questions, categories, answers and playing the Trivia game.
 
 
 ## Getting Started
@@ -30,6 +30,26 @@ Not applicable
 }
 ```
 
+## Resource Endpoint Library
+### Categories
+`GET /categories`
+* Fetches a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category
+* Request Arguments: None
+
+```
+{
+    "success": true,
+    "categories": {
+        "1": "Science",
+        "2": "Art",
+        "3": "Geography",
+        "4": "History",
+        "5": "Entertainment",
+        "6": "Sports"
+    },
+    "total_categories" 6
+}
+```
 
 
 
