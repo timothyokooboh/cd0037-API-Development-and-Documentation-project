@@ -54,7 +54,7 @@ Not applicable
 ### Questions
 `GET /questions?page=3`
 * Fetches a paginated list of ten questions per page.
-* Request arguments: page (int)
+* Request Arguments: page (int)
 
 ```
 {
@@ -87,6 +87,33 @@ Not applicable
     "total_questions": 31
 }
 ```
+
+`GET /categories/1/questions`
+* Fetches questions by category.
+* Request Arguments: None
+
+```
+{
+    "current_category": 1,
+    "success": true,
+    "total_questions: 12,
+    "questions": [
+        {
+            "answer": "The Liver",
+            "category": 1,
+            "difficulty": 4,
+            "id": 20,
+            "question": "What is the heaviest organ in the human body?"
+        },
+        {
+            "answer": "Alexander Fleming",
+            "category": 1,
+            "difficulty": 3,
+            "id": 21,
+        "question": "Who discovered penicillin?"
+        },
+    ]
+}
 
 
 
