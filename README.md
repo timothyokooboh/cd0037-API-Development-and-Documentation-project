@@ -1,6 +1,35 @@
-# API Development and Documentation Final Project
+# Trivia App
+## Introducton
+The Trivia API powers the Trivia App. It contains resources and endpoints for managing questions, categories, answers and playing the Trivia game.
 
-## Trivia App
+
+## Getting Started
+### Base URL
+`http://127.0.0.1:5000`
+
+
+## Errors
+### 404 - Not Foumd
+
+```{
+    "success": False,
+    "error": 404,
+    "message": "resource not found"
+}```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 Udacity is invested in creating bonding experiences for its employees and students. A bunch of team members got the idea to hold trivia on a regular basis and created a webpage to manage the trivia app and play the game, but their API experience is limited and still needs to be built out.
 
