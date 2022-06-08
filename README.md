@@ -11,11 +11,13 @@ The Trivia API powers the Trivia App. It contains resources and endpoints for ma
 ## Errors
 ### 404 - Not Foumd
 
-```{
+```
+{
     "success": False,
     "error": 404,
     "message": "resource not found"
-}```
+}
+```
 
 
 
