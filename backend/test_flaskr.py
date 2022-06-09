@@ -88,6 +88,14 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(data['category'])
         self.assertTrue(data['difficulty'])
 
+    def test_create_category(self):
+        res = self.client().post("/categories", json={'type': 'politics'})
+
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['categories'])
+
     def test_get_question_for_quiz(self):
         res = self.client().post("/quizzes", json={'quiz_category': {'type': 'science', 'id': 1}, 'previous_questions': []})
 

@@ -168,6 +168,20 @@ def create_app(test_config=None):
             'question': random_question
         })
 
+    @app.route("/categories", methods=["POST"])
+    def create_category():
+        body = request.get_json()
+        category = body.get('type')
+
+        category = Category(type=category)
+        category.insert()
+
+        return jsonify({
+            'success': True,
+            'created': category.id,
+            'categories': list_categories().get_json()['categories'],
+        })
+
     @app.errorhandler(404)
     def not_found(error):
         return jsonify({

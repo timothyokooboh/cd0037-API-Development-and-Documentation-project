@@ -11,14 +11,15 @@ class FormView extends Component {
       difficulty: 1,
       category: 1,
       categories: {},
-      showSuccess: false,
+      showNotificationForQuestions: false,
+      showNotificationForCategories: false,
       newCategory: ""
     };
   }
 
   componentDidMount() {
     $.ajax({
-      url: `/categories`, //TODO: update request URL
+      url: `/categories`, 
       type: 'GET',
       success: (result) => {
         this.setState({ categories: result.categories });
@@ -31,14 +32,10 @@ class FormView extends Component {
     });
   }
 
-  disableButton = () => {
-    return !this.state.question || !this.state.answer;
-  }
-
   submitQuestion = (event) => {
     event.preventDefault();
     $.ajax({
-      url: '/questions', //TODO: update request URL
+      url: '/questions', 
       type: 'POST',
       dataType: 'json',
       contentType: 'application/json',
@@ -53,10 +50,10 @@ class FormView extends Component {
       },
       crossDomain: true,
       success: (result) => {
-        this.setState({showSuccess: true, question: '', answer: '', difficulty: 1, category: 1});
+        this.setState({showNotificationForQuestions: true, question: '', answer: '', difficulty: 1, category: 1});
 
         setTimeout(() => {
-          this.setState({showSuccess: false});
+          this.setState({showNotificationForQuestions: false});
         }, 4000)
 
         document.getElementById('add-question-form').reset();
@@ -64,6 +61,37 @@ class FormView extends Component {
       },
       error: (error) => {
         alert('Unable to add question. Please try your request again');
+        return;
+      },
+    });
+  };
+
+  submitCategory = (event) => {
+    event.preventDefault();
+    $.ajax({
+      url: '/categories',
+      type: 'POST',
+      dataType: 'json',
+      contentType: 'application/json',
+      data: JSON.stringify({
+        type: this.state.newCategory,
+      }),
+      xhrFields: {
+        withCredentials: true,
+      },
+      crossDomain: true,
+      success: (result) => {
+        this.setState({ categories: result.categories, showNotificationForCategories: true, newCategory: '' });
+
+        setTimeout(() => {
+          this.setState({ showNotificationForCategories: false });
+        }, 4000)
+
+        document.getElementById('add-category-form').reset();
+        return;
+      },
+      error: (error) => {
+        alert('Unable to add category. Please try your request again');
         return;
       },
     });
@@ -112,22 +140,26 @@ class FormView extends Component {
               })}
             </select>
           </label>
-          <input type='submit' className='button' value='Submit' disabled={this.disableButton()} />
+          <input type='submit' className='button' value='Submit' disabled={!this.state.question || !this.state.answer} />
         </form>
 
-        { this.state.showSuccess && <div className="notification">
+        { this.state.showNotificationForQuestions && <div className="notification">
           Question added successfully
         </div> }
 
         <div style={{marginTop: '50px'}}>
           <h2>Add a new category</h2>
-          <form>
+          <form onSubmit={this.submitCategory} id='add-category-form'>
             <label>
               Category
               <input type="text" name="newCategory" onChange={this.handleChange} ></input>
             </label>
-            <input type="submit" className="button" value="Submit" />
+            <input type="submit" className="button" value="Submit" disabled={!this.state.newCategory} />
           </form>
+          { this.state.showNotificationForCategories && <div className="notification">
+          Category added successfully
+        </div> }
+
         </div>
       </div>
     );

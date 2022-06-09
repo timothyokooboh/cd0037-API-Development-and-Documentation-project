@@ -72,6 +72,11 @@ class Category(db.Model):
 
     def format(self):
         return {
-            'id': self.id,
-            'type': self.type
-            }
+           'id': self.id,
+        'type': self.type
+        }
+
+    def insert(self):
+        db.session.add(self)
+        db.session.commit()
+        

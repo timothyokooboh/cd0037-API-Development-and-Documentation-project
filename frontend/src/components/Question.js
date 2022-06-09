@@ -13,6 +13,11 @@ class Question extends Component {
     this.setState({ visibleAnswer: !this.state.visibleAnswer });
   }
 
+
+  defaultImage = (e) => {
+    e.target.src = "new-category.png";
+  }
+
   render() {
     const { question, answer, category, difficulty } = this.props;
     return (
@@ -23,6 +28,7 @@ class Question extends Component {
             className='category'
             alt={`${category.toLowerCase()}`}
             src={`${category.toLowerCase()}.svg`}
+            onError={this.defaultImage}
           />
           <div className='difficulty'>Difficulty: {difficulty}</div>
           <img
