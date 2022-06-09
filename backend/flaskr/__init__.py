@@ -100,6 +100,9 @@ def create_app(test_config=None):
         search_term = body.get('searchTerm', "")
         current_category = body.get('category', None)
 
+        if not search_term:
+            abort(400)
+
         questions = []
         if current_category:
             questions = Question.query.filter(Question.question.ilike('%' + search_term + '%'), Question.category == current_category).all()
@@ -144,6 +147,9 @@ def create_app(test_config=None):
         quiz_category = body.get('quiz_category', {}) 
         category_id = quiz_category.get('id')
 
+        if previous_questions == None:
+            abort(400)
+
         questions = []
         if category_id:
             questions = Question.query.filter_by(category=category_id).all()
@@ -172,6 +178,9 @@ def create_app(test_config=None):
     def create_category():
         body = request.get_json()
         category = body.get('type')
+
+        if not category:
+            abort(400)
 
         category = Category(type=category)
         category.insert()

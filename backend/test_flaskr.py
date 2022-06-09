@@ -61,6 +61,14 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(data['questions'])
         self.assertTrue(data['total_questions'])
 
+    def test_question_search_fail(self):
+        res = self.client().post("/questions/search", json={'search_term': 'did', 'category': None })
+
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 400)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'bad request')
+
     def test_delete_question(self):
         question = Question(question='what is the largest organ in the body', answer='liver', category=1, difficulty=1)
         question.insert()
@@ -96,6 +104,13 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['success'], True)
         self.assertTrue(data['categories'])
 
+    def test_create_category_fail(self):
+        res = self.client().post("/categories", json={'type': None})
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 400)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'bad request')
+
     def test_get_question_for_quiz(self):
         res = self.client().post("/quizzes", json={'quiz_category': {'type': 'science', 'id': 1}, 'previous_questions': []})
 
@@ -104,6 +119,13 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['success'], True)
         self.assertTrue(data['question'])
     
+    def test_get_question_for_quiz_fail(self):
+        res = self.client().post("/quizzes", json={'quiz_category': {'type': 'science', 'id': 1}, 'previous_questions': None})
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 400)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'bad request')
+
     def test_get_question_based_on_category(self):
         res = self.client().get("/categories/1/questions")
         data = json.loads(res.data)
