@@ -29,6 +29,22 @@ Not applicable
     "message": "unprocessable"
 }
 ```
+### 400 - Bad request
+```
+{
+    "success": false,
+    "error": 400,
+    "message": "bad request"
+}
+```
+### 500 - Server error
+```
+{
+    "success": false,
+    "error": 500,
+    "message": "server error"
+}
+```
 
 ## Resource Endpoint Library
 ### Categories
