@@ -139,7 +139,7 @@ Not applicable
 ```
 
 `POST /questions`
-* Adds a questionto the question library
+* Adds a question to the question library
 * Request Body Parameters: `question (str)`, `answer (str)`, `category (int)`, `difficulty (int)`
 * `curl -d "question=what is my name&answer=timothy&category=1&difficulty=3" -X POST http://127.0.0.1/5000/questions`
 
